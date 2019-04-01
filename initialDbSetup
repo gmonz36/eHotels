@@ -1,3 +1,4 @@
+
 CREATE TABLE person
 (
 	SSN char(8) UNIQUE,
@@ -60,7 +61,7 @@ CREATE TABLE hotel
 (
 	manager_SSN char(8),
 	hotel_chain_chainName varchar(20),
-	hotelName varchar(20) UNIQUE,
+	hotelName varchar(20),
 	starRating int,
 	streetNumber int,
 	streetName varchar(20),
@@ -79,8 +80,7 @@ CREATE TABLE employee
 	person_SSN char(8) UNIQUE,	
 	position varchar (30),
 	password varchar(20),
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName) REFERENCES hotel(hotel_chain_chainName,hotelName),
 	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
 	PRIMARY KEY (person_SSN)	
 );
@@ -90,8 +90,7 @@ CREATE TABLE hotel_email
 	hotel_chain_chainName varchar(20),
 	hotel_hotelName varchar(20),
 	email varchar(50),
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName) REFERENCES hotel(hotel_chain_chainName,hotelName),
 	CONSTRAINT PK_hotel_email PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, email)
 );
 
@@ -100,8 +99,7 @@ CREATE TABLE hotel_phone_number
 	hotel_chain_chainName varchar(20),
 	hotel_hotelName varchar(20),
 	phoneNumber varchar(10),
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName) REFERENCES hotel(hotel_chain_chainName,hotelName),
 	CONSTRAINT PK_hotel_phone_number PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, phoneNumber)
 );
 
@@ -115,8 +113,7 @@ CREATE TABLE room
 	view varChar(20),
 	extendable boolean,
 	problems text,
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName) REFERENCES hotel(hotel_chain_chainName,hotelName),
 	CONSTRAINT PK_room PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, roomNumber)
 );
 
@@ -126,10 +123,8 @@ CREATE TABLE amenity
 	hotel_hotelName varchar(20),
 	room_roomNumber int,
 	type varChar (20),
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
-	FOREIGN KEY (room_roomNumber) REFERENCES room(roomNumber),
-	CONSTRAINT PK_amenity PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, room_roomNumber, type)
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName,room_roomNumber) REFERENCES room(hotel_chain_chainName,hotel_hotelName,roomNumber),
+	CONSTRAINT PK_amenity PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, room_roomNumber)
 );
 
 CREATE TABLE booking
@@ -141,9 +136,7 @@ CREATE TABLE booking
 	bookingID char(10) UNIQUE,
 	checkInDate date,
 	checkOutDate date,
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
-	FOREIGN KEY (room_roomNumber) REFERENCES room(roomNumber),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName,room_roomNumber) REFERENCES room(hotel_chain_chainName,hotel_hotelName,roomNumber),
 	FOREIGN KEY (customer_SSN) REFERENCES customer(person_SSN),
 	PRIMARY KEY (bookingID)
 );
@@ -160,9 +153,7 @@ CREATE TABLE renting
 	paymentStatus paymentStatus,
 	checkInDate date,
 	checkOutDate date,
-	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
-	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
-	FOREIGN KEY (room_roomNumber) REFERENCES room(roomNumber),
+	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName,room_roomNumber) REFERENCES room(hotel_chain_chainName,hotel_hotelName,roomNumber),
 	FOREIGN KEY (customer_SSN) REFERENCES customer(person_SSN),
 	PRIMARY KEY (rentingID)
 );
