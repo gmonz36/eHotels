@@ -117,8 +117,7 @@ CREATE TABLE room
 	problems text,
 	FOREIGN KEY (hotel_chain_chainName) REFERENCES hotel_chain(chainName),
 	FOREIGN KEY (hotel_hotelName) REFERENCES hotel(hotelName),
-	CONSTRAINT PK_room PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, roomNumber)	,
-	UNIQUE (hotel_chain_chainName, hotel_hotelName, roomNumber)
+	CONSTRAINT PK_room PRIMARY KEY (hotel_chain_chainName, hotel_hotelName, roomNumber)
 );
 
 CREATE TABLE amenity
