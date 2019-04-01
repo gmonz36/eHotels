@@ -16,6 +16,7 @@ CREATE TABLE person
 CREATE TABLE customer
 (
 	person_SSN char(8) UNIQUE,
+	username varchar(20),
 	password varchar(20),
 	registrationDate date,
 	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
@@ -79,6 +80,7 @@ CREATE TABLE employee
 	hotel_hotelName varchar(20),	
 	person_SSN char(8) UNIQUE,	
 	position varchar (30),
+	username varchar(20),
 	password varchar(20),
 	FOREIGN KEY (hotel_chain_chainName,hotel_hotelName) REFERENCES hotel(hotel_chain_chainName,hotelName),
 	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
