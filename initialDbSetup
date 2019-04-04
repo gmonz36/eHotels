@@ -19,15 +19,15 @@ CREATE TABLE customer
 	username varchar(20),
 	password varchar(20),
 	registrationDate date,
-	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
-	PRIMARY KEY (person_SSN)
+	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	PRIMARY KEY (SSN)
 );
 
 CREATE TABLE manager 
 (
 	SSN char(8) UNIQUE,	
-	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
-	PRIMARY KEY (person_SSN)
+	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	PRIMARY KEY (SSN)
 );
 
 CREATE TABLE hotel_chain
@@ -69,7 +69,7 @@ CREATE TABLE hotel
 	city varchar(20),
 	state varchar(20),
 	postalCode varchar(6),
-	FOREIGN KEY (manager_SSN) REFERENCES manager(person_SSN),
+	FOREIGN KEY (SSN) REFERENCES manager(SSN),
 	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName),
 	CONSTRAINT PK_hotel PRIMARY KEY (chainName, hotelName)
 );
@@ -83,8 +83,8 @@ CREATE TABLE employee
 	username varchar(20),
 	password varchar(20),
 	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName),
-	FOREIGN KEY (person_SSN) REFERENCES person(SSN),
-	PRIMARY KEY (person_SSN)	
+	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	PRIMARY KEY (SSN)	
 );
 
 CREATE TABLE hotel_email
@@ -134,12 +134,12 @@ CREATE TABLE booking
 	chainName varchar(20),
 	hotelName varchar(20),
 	roomNumber int,
-	customer_ssn char(8),
+	SSN char(8),
 	bookingID char(10) UNIQUE,
 	checkInDate date,
 	checkOutDate date,
 	FOREIGN KEY (chainName,hotelName,roomNumber) REFERENCES room(chainName,hotelName,roomNumber),
-	FOREIGN KEY (customer_SSN) REFERENCES customer(person_SSN),
+	FOREIGN KEY (SSN) REFERENCES customer(SSN),
 	PRIMARY KEY (bookingID)
 );
 
@@ -150,13 +150,13 @@ CREATE TABLE renting
 	chainName varchar(20),
 	hotelName varchar(20),
 	roomNumber int,
-	customer_ssn char(8),
+	SSN char(8),
 	rentingID char(10) UNIQUE,
 	paymentStatus paymentStatus,
 	checkInDate date,
 	checkOutDate date,
 	FOREIGN KEY (chainName,hotelName,roomNumber) REFERENCES room(chainName,hotelName,roomNumber),
-	FOREIGN KEY (customer_SSN) REFERENCES customer(person_SSN),
+	FOREIGN KEY (SSN) REFERENCES customer(SSN),
 	PRIMARY KEY (rentingID)
 );
 
@@ -164,7 +164,7 @@ CREATE TABLE check_in
 (
 	bookingID char(10) UNIQUE,
 	rentingID char(10),
-	FOREIGN KEY (booking_bookingID) REFERENCES booking(bookingID),
-	FOREIGN KEY (renting_rentingID) REFERENCES renting(rentingID),
-	PRIMARY KEY (booking_bookingID)
+	FOREIGN KEY (bookingID) REFERENCES booking(bookingID),
+	FOREIGN KEY (rentingID) REFERENCES renting(rentingID),
+	PRIMARY KEY (bookingID)
 );
