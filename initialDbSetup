@@ -16,7 +16,6 @@ CREATE TABLE person
 CREATE TABLE customer
 (
 	SSN char(8) UNIQUE,
-	username varchar(20),
 	password varchar(20),
 	registrationDate date,
 	FOREIGN KEY (SSN) REFERENCES person(SSN),
