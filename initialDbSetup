@@ -181,7 +181,7 @@ language plpgsql;
 
 CREATE TRIGGER room_insert
      AFTER INSERT ON room
-     EXECUTE PROCEDURE inc_numberOfRooms();
+     FOR EACH ROW EXECUTE PROCEDURE inc_numberOfRooms();
 
 CREATE OR REPLACE FUNCTION dec_numberOfRooms() RETURNS TRIGGER AS
 $BODY$
@@ -195,4 +195,4 @@ language plpgsql;
 
 CREATE TRIGGER room_delete
      AFTER DELETE ON room
-     EXECUTE PROCEDURE dec_numberOfRooms();
+     FOR EACH ROW EXECUTE PROCEDURE dec_numberOfRooms();
