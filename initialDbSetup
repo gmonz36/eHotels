@@ -125,7 +125,7 @@ CREATE TABLE amenity
 	roomNumber int,
 	type varChar (20),
 	FOREIGN KEY (chainName,hotelName,roomNumber) REFERENCES room(chainName,hotelName,roomNumber),
-	CONSTRAINT PK_amenity PRIMARY KEY (chainName, hotelName, roomNumber)
+	CONSTRAINT PK_amenity PRIMARY KEY (chainName, hotelName, roomNumber, type)
 );
 
 CREATE TABLE booking
