@@ -143,6 +143,18 @@ CREATE TABLE booking
 	PRIMARY KEY (bookingID)
 );
 
+CREATE TABLE booking_archive
+(
+	chainName varchar(20),
+	hotelName varchar(20),
+	roomNumber int,
+	SSN char(8),
+	bookingID char(10) UNIQUE,
+	checkInDate date,
+	checkOutDate date,
+	PRIMARY KEY (bookingID)
+);
+
 CREATE TYPE paymentStatus AS ENUM ('paid', 'pending');
 
 CREATE TABLE renting 
@@ -160,6 +172,19 @@ CREATE TABLE renting
 	PRIMARY KEY (rentingID)
 );
 
+CREATE TABLE renting_archive 
+(
+	chainName varchar(20),
+	hotelName varchar(20),
+	roomNumber int,
+	SSN char(8),
+	rentingID char(10) UNIQUE,
+	paymentStatus paymentStatus,
+	checkInDate date,
+	checkOutDate date,
+	PRIMARY KEY (rentingID)
+);
+
 CREATE TABLE check_in
 (
 	bookingID char(10) UNIQUE,
@@ -168,6 +193,16 @@ CREATE TABLE check_in
 	FOREIGN KEY (rentingID) REFERENCES renting(rentingID),
 	PRIMARY KEY (bookingID)
 );
+
+CREATE VIEW areaRooms AS
+SELECT state, city, SUM(numberOfRooms)
+FROM hotel
+GROUP BY state, city;
+
+CREATE VIEW hotelRoomsCapacity AS
+SELECT DISTINCT chainName, hotelName, capacity
+FROM room
+ORDER BY chainName, hotelName;
 
 CREATE OR REPLACE FUNCTION updateNumberofRooms() RETURNS TRIGGER AS 
 $BODY$
@@ -210,3 +245,38 @@ $BODY$ LANGUAGE plpgsql;
 create trigger updateNumberofHotels
 AFTER INSERT OR DELETE ON hotel
 FOR EACH ROW EXECUTE PROCEDURE updateNumberofHotels();
+
+CREATE OR REPLACE FUNCTION archiveBooking() RETURNS TRIGGER AS 
+$BODY$
+begin
+set search_path='eHotel';
+INSERT INTO booking_archive VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.bookingID,new.checkInDate,new.checkOutDate)
+  return new;
+end;
+$BODY$ LANGUAGE plpgsql;
+
+create trigger archiveBooking
+AFTER INSERT ON booking
+FOR EACH ROW EXECUTE PROCEDURE archiveBooking();
+
+CREATE OR REPLACE FUNCTION archiveRenting() RETURNS TRIGGER AS 
+$BODY$
+begin
+set search_path='eHotel';
+if (TG_OP = 'INSERT') THEN
+	INSERT INTO renting_archive 
+		VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.rentingID,new.paymentStatus,new.checkInDate,new.checkOutDate)
+	  return new; 
+ELSIF (TG_OP = 'UPDATE') THEN
+	UPDATE renting_archive
+		SET paymentStatus = new.paymentStatus
+		WHERE rentingID = new.rentingID
+  return new;
+END IF;
+end;
+$BODY$ LANGUAGE plpgsql;
+
+create trigger archiveRenting
+AFTER INSERT OR UPDATE ON renting
+FOR EACH ROW EXECUTE PROCEDURE archiveRenting();
+
