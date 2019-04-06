@@ -18,14 +18,14 @@ CREATE TABLE customer
 	SSN char(8) UNIQUE,
 	password varchar(20),
 	registrationDate date,
-	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	FOREIGN KEY (SSN) REFERENCES person(SSN) ON DELETE CASCADE,
 	PRIMARY KEY (SSN)
 );
 
 CREATE TABLE manager 
 (
 	SSN char(8) UNIQUE,	
-	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	FOREIGN KEY (SSN) REFERENCES person(SSN) ON DELETE CASCADE,
 	PRIMARY KEY (SSN)
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE chain_email
 (
 	chainName varchar(20),
 	email varchar(50),
-	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName),
+	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName) ON DELETE CASCADE,
 	CONSTRAINT PK_chain_email PRIMARY KEY (chainName, email)
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE chain_phone_number
 (
 	chainName varchar(20),
 	phoneNumber varchar(10),
-	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName),
+	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName) ON DELETE CASCADE,
 	CONSTRAINT PK_chain_phone_number PRIMARY KEY (chainName, phoneNumber)
 );
 
@@ -70,7 +70,7 @@ CREATE TABLE hotel
 	postalCode varchar(6),
 	numberOfRooms int,
 	FOREIGN KEY (SSN) REFERENCES manager(SSN),
-	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName),
+	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName) ON DELETE CASCADE,
 	CONSTRAINT PK_hotel PRIMARY KEY (chainName, hotelName)
 );
 
@@ -82,8 +82,8 @@ CREATE TABLE employee
 	position varchar (30),
 	username varchar(20) UNIQUE,
 	password varchar(20),
-	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName),
-	FOREIGN KEY (SSN) REFERENCES person(SSN),
+	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName) ON DELETE CASCADE,
+	FOREIGN KEY (SSN) REFERENCES person(SSN) ON DELETE CASCADE,
 	PRIMARY KEY (SSN)	
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE hotel_email
 	chainName varchar(20),
 	hotelName varchar(20),
 	email varchar(50),
-	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName),
+	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName) ON DELETE CASCADE,
 	CONSTRAINT PK_hotel_email PRIMARY KEY (chainName, hotelName, email)
 );
 
@@ -101,7 +101,7 @@ CREATE TABLE hotel_phone_number
 	chainName varchar(20),
 	hotelName varchar(20),
 	phoneNumber varchar(10),
-	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName),
+	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName) ON DELETE CASCADE,
 	CONSTRAINT PK_hotel_phone_number PRIMARY KEY (chainName, hotelName, phoneNumber)
 );
 
@@ -115,7 +115,7 @@ CREATE TABLE room
 	view varChar(20),
 	extendable boolean,
 	problems text,
-	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName),
+	FOREIGN KEY (chainName,hotelName) REFERENCES hotel(chainName,hotelName) ON DELETE CASCADE,
 	CONSTRAINT PK_room PRIMARY KEY (chainName, hotelName, roomNumber)
 );
 
@@ -125,7 +125,7 @@ CREATE TABLE amenity
 	hotelName varchar(20),
 	roomNumber int,
 	type varChar (20),
-	FOREIGN KEY (chainName,hotelName,roomNumber) REFERENCES room(chainName,hotelName,roomNumber),
+	FOREIGN KEY (chainName,hotelName,roomNumber) REFERENCES room(chainName,hotelName,roomNumber) ON DELETE CASCADE,
 	CONSTRAINT PK_amenity PRIMARY KEY (chainName, hotelName, roomNumber, type)
 );
 
