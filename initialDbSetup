@@ -250,7 +250,7 @@ CREATE OR REPLACE FUNCTION archiveBooking() RETURNS TRIGGER AS
 $BODY$
 begin
 set search_path='eHotel';
-INSERT INTO booking_archive VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.bookingID,new.checkInDate,new.checkOutDate)
+INSERT INTO booking_archive VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.bookingID,new.checkInDate,new.checkOutDate);
   return new;
 end;
 $BODY$ LANGUAGE plpgsql;
@@ -265,12 +265,12 @@ begin
 set search_path='eHotel';
 if (TG_OP = 'INSERT') THEN
 	INSERT INTO renting_archive 
-		VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.rentingID,new.paymentStatus,new.checkInDate,new.checkOutDate)
+		VALUES(new.chainName,new.hotelName,new.roomNumber,new.SSN,new.rentingID,new.paymentStatus,new.checkInDate,new.checkOutDate);
 	  return new; 
 ELSIF (TG_OP = 'UPDATE') THEN
 	UPDATE renting_archive
 		SET paymentStatus = new.paymentStatus
-		WHERE rentingID = new.rentingID
+		WHERE rentingID = new.rentingID;
   return new;
 END IF;
 end;
