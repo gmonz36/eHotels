@@ -68,6 +68,7 @@ CREATE TABLE hotel
 	city varchar(20),
 	state varchar(20),
 	postalCode varchar(6),
+	numberOfRooms int,
 	FOREIGN KEY (SSN) REFERENCES manager(SSN),
 	FOREIGN KEY (chainName) REFERENCES hotel_chain(chainName),
 	CONSTRAINT PK_hotel PRIMARY KEY (chainName, hotelName)
@@ -167,3 +168,31 @@ CREATE TABLE check_in
 	FOREIGN KEY (rentingID) REFERENCES renting(rentingID),
 	PRIMARY KEY (bookingID)
 );
+
+CREATE OR REPLACE FUNCTION inc_numberOfRooms() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    UPDATE hotel
+        SET numberOfRooms = numberOfRooms + 1 WHERE hotelName=new.hotelName AND chainName=new.ChainName;
+           RETURN new;
+END;
+$BODY$
+language plpgsql;
+
+CREATE TRIGGER room_insert
+     AFTER INSERT ON room
+     EXECUTE PROCEDURE inc_numberOfRooms();
+
+CREATE OR REPLACE FUNCTION dec_numberOfRooms() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    UPDATE hotel
+        SET numberOfRooms = numberOfRooms - 1 WHERE hotelName=new.hotelName AND chainName=new.ChainName;
+           RETURN new;
+END;
+$BODY$
+language plpgsql;
+
+CREATE TRIGGER room_delete
+     AFTER DELETE ON room
+     EXECUTE PROCEDURE dec_numberOfRooms();
