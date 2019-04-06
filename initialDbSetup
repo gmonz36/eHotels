@@ -169,30 +169,42 @@ CREATE TABLE check_in
 	PRIMARY KEY (bookingID)
 );
 
-CREATE OR REPLACE FUNCTION inc_numberOfRooms() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION updateNumberofRooms() RETURNS TRIGGER AS 
 $BODY$
-BEGIN
-    UPDATE hotel
-        SET numberOfRooms = numberOfRooms + 1 WHERE hotelName=new.hotelName AND chainName=new.ChainName;
-           RETURN new;
-END;
-$BODY$
-language plpgsql;
+DECLARE updatecount int;
+begin
+if (TG_OP = 'DELETE') THEN
+  updatecount:= (select count(*) from room where hotelname = old.hotelname and chainname = old.chainname);
+  update hotel set numberofrooms=updatecount where hotelname = old.hotelname and chainname = old.chainname;
+  RETURN old;
+ELSIF (TG_OP = 'INSERT') THEN
+ updatecount := ( select count(*) from room where hotelname = new.hotelname and chainname = new.chainname);
+  update hotel set numberofrooms=updatecount where hotelname = new.hotelname and chainname = new.chainname;
+  return new;
+END IF;
+end;
+$BODY$ LANGUAGE plpgsql;
 
-CREATE TRIGGER room_insert
-     AFTER INSERT ON room
-     FOR EACH ROW EXECUTE PROCEDURE inc_numberOfRooms();
+create trigger updateNumberofRooms
+AFTER INSERT OR DELETE ON room
+FOR EACH ROW EXECUTE PROCEDURE updateNumberofRooms();
 
-CREATE OR REPLACE FUNCTION dec_numberOfRooms() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION updateNumberofHotels() RETURNS TRIGGER AS 
 $BODY$
-BEGIN
-    UPDATE hotel
-        SET numberOfRooms = numberOfRooms - 1 WHERE hotelName=new.hotelName AND chainName=new.ChainName;
-           RETURN new;
-END;
-$BODY$
-language plpgsql;
+DECLARE updatecount int;
+begin
+if (TG_OP = 'DELETE') THEN
+  updatecount:= (select count(*) from hotel where chainname = old.chainname);
+  update hotel_chain set numberofhotels=updatecount where chainname = old.chainname;
+  RETURN old;
+ELSIF (TG_OP = 'INSERT') THEN
+ updatecount := ( select count(*) from hotelwhere chainname = new.chainname);
+  update hotel_chain set numberofhotels=updatecount where chainname = new.chainname;
+  return new;
+END IF;
+end;
+$BODY$ LANGUAGE plpgsql;
 
-CREATE TRIGGER room_delete
-     AFTER DELETE ON room
-     FOR EACH ROW EXECUTE PROCEDURE dec_numberOfRooms();
+create trigger updateNumberofHotels
+AFTER INSERT OR DELETE ON room
+FOR EACH ROW EXECUTE PROCEDURE updateNumberofHotels();
