@@ -198,7 +198,7 @@ if (TG_OP = 'DELETE') THEN
   update hotel_chain set numberofhotels=updatecount where chainname = old.chainname;
   RETURN old;
 ELSIF (TG_OP = 'INSERT') THEN
- updatecount := ( select count(*) from hotelwhere chainname = new.chainname);
+ updatecount := ( select count(*) from hotel where chainname = new.chainname);
   update hotel_chain set numberofhotels=updatecount where chainname = new.chainname;
   return new;
 END IF;
