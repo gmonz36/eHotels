@@ -206,5 +206,5 @@ end;
 $BODY$ LANGUAGE plpgsql;
 
 create trigger updateNumberofHotels
-AFTER INSERT OR DELETE ON room
+AFTER INSERT OR DELETE ON hotel
 FOR EACH ROW EXECUTE PROCEDURE updateNumberofHotels();
