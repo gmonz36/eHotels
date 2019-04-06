@@ -173,6 +173,7 @@ CREATE OR REPLACE FUNCTION updateNumberofRooms() RETURNS TRIGGER AS
 $BODY$
 DECLARE updatecount int;
 begin
+set search_path='eHotel';
 if (TG_OP = 'DELETE') THEN
   updatecount:= (select count(*) from room where hotelname = old.hotelname and chainname = old.chainname);
   update hotel set numberofrooms=updatecount where hotelname = old.hotelname and chainname = old.chainname;
@@ -193,6 +194,7 @@ CREATE OR REPLACE FUNCTION updateNumberofHotels() RETURNS TRIGGER AS
 $BODY$
 DECLARE updatecount int;
 begin
+set search_path='eHotel';
 if (TG_OP = 'DELETE') THEN
   updatecount:= (select count(*) from hotel where chainname = old.chainname);
   update hotel_chain set numberofhotels=updatecount where chainname = old.chainname;
