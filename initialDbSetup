@@ -189,8 +189,6 @@ CREATE TABLE check_in
 (
 	bookingID char(10) UNIQUE,
 	rentingID char(10),
-	FOREIGN KEY (bookingID) REFERENCES booking(bookingID),
-	FOREIGN KEY (rentingID) REFERENCES renting(rentingID),
 	PRIMARY KEY (bookingID)
 );
 
